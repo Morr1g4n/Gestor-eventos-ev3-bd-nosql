@@ -37,6 +37,11 @@ class MongoManager:
                 print("No se encontró ningún evento.")
         except Exception as e:
             print(e)
+    def busqueda_evento_codigo(self, data):
+        try:
+            pass #completar
+        except Exception as e:
+            print(e)
     
     def printEvento(self, lista):
         tabla = []
