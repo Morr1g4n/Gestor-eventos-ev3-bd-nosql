@@ -6,7 +6,7 @@
 ```
 py -m venv entorno-pymongo
 ```
-4. Activar entorno
+3. Activar entorno
 ```
 windows: entorno-pymongo\Scripts\activate
 linux: source .venv/bin/activate
