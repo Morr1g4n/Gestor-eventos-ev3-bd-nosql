@@ -96,6 +96,12 @@ class MongoManager:
         except Exception as e:
             print(e)
 
+    def busqueda_invitado_validar_estado(self, data):
+        pass
+    
+    def busqueda_invitado_confirmar_evento(self, data):
+        pass
+
     def printEvento(self, lista):
         tabla = []
         headers = ["Codigo", "Nombre", "Fecha", "Lugar", "Categoria"]
