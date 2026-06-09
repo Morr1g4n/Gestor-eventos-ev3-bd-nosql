@@ -44,10 +44,10 @@ class MongoManager:
             data = data.strip()
             data = "EVT-" + data #Añade el prefijo "EVT-" a la string
             #print(data) < print debug
-            patron_re = re.compile("^(EVT).\\d{4}.\\d{3}") #El patrón busca el grupo de caracteres "EVT" al inicio del string, los puntos indican cualquier carácter incluidos espacios
+            patron_re = re.compile("^(EVT).\\d{4}.\\d{3}$") #El patrón busca el grupo de caracteres "EVT" al inicio del string, los puntos indican cualquier carácter incluidos espacios
             #luego \d busca cualquier carácter númerico y se indica la cantidad de esos carácteres.
             if patron_re.match(data): #compara el string introducido con el patrón de regex para realizar la busqueda, si es incorrecto no se realiza.
-                busqueda_re = re.compile(f"^(EVT).{data[4:8]}.{data[9:12]}")
+                busqueda_re = re.compile(f"^(EVT).{data[4:8]}.{data[9:12]}$")
                 #print(busqueda_re) < print debug
                 cursor = bd[COL_EVENTOS].find({"codigo": busqueda_re})
                 resultados = list(cursor)
