@@ -60,7 +60,28 @@ class MongoManager:
                 print("Formato de código incorrecto, intente nuevamente.")
 
         except Exception as e:
-            print(e)         
+            print(e)
+
+    def busqueda_invitado_nombre(self, data):
+        try:
+            regex_nombre = re.compile(f"^{data}", re.IGNORECASE) #se usará para buscar al inicio del string, encontrará solo nombre o nombre completo
+            #re.IGNORECASE hace que no sea case sensitive (ignora si es mayuscula o minuscula la busqueda)
+            cursor = bd[COL_INVITADOS].find({"nombre": regex_nombre})
+            resultados = list(cursor)
+            cursor.close()
+            if resultados:
+                self.printInvitado(resultados)
+            else: #intenta busqueda por apellido en caso de no encontrar resultados
+                regex_apellido = re.compile(f"{data}$", re.IGNORECASE) #busca al final de la string, encontrará solo apellido o nombre completo
+                cursor = bd[COL_INVITADOS].find({"nombre": regex_apellido})
+                resultados = list(cursor)
+                if resultados:
+                    self.printInvitado(resultados)
+                else:
+                    print("No se encuentra al invitado.")
+        except Exception as e:
+            print(e)
+
     def printEvento(self, lista):
         tabla = []
         headers = ["Codigo", "Nombre", "Fecha", "Lugar", "Categoria"]
@@ -73,7 +94,21 @@ class MongoManager:
             dato = [codigo, nombre, fecha, lugar, categoria]
             tabla.append(dato)
         print(tabulate(tabla, headers=headers))
-    #def printEvento(self, lista):
+
+    def printInvitado(self, lista):
+        tabla = []
+        headers = ["RUT", "Nombre", "Correo", "Empresa", "Estado"]
+        for resultado in lista:
+            rut = str(resultado["rut"])
+            nombre = str(resultado["nombre"])
+            correo  = str(resultado["correo"])
+            empresa = str(resultado["empresa"])
+            estado = str(resultado["estado"])
+            dato = [rut, nombre, correo, empresa, estado]
+            tabla.append(dato)
+        print(tabulate(tabla, headers=headers))
+
+    #def printEvento(self, lista):    print con alineamentos manuales, no se usará
         #print("-" * 140)
         #print("Eventos encontrados:")
         #print(f"{'Codigo':<20}{'Nombre':<20}{'Fecha':<20}{'Lugar':<30}{'Categoria':<20}")
