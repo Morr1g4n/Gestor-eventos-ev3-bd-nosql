@@ -36,7 +36,7 @@ class MongoManager:
             if resultados: #revisa si hay algo dentro de la lista (True)
                 self.printEvento(resultados)
             else:
-                print("No se encontró ningún evento.")
+                print("No se encuentran resultados.")
         except Exception as e:
             print(e)
 
@@ -56,7 +56,7 @@ class MongoManager:
                 if resultados:
                     self.printEvento(resultados)
                 else:
-                    print("No se encontró ningún evento")
+                    print("No se encuentran resultados.")
             else:
                 print("Formato de código incorrecto, intente nuevamente.")
 
