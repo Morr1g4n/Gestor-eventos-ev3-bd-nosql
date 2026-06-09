@@ -97,7 +97,15 @@ class MongoManager:
             print(e)
 
     def busqueda_invitado_validar_estado(self, data):
-        pass
+        try:
+            data = data.strip()
+            cursor = bd[COL_INVITADOS].find_one({"rut": data}) #al ser 1 solo resultado, no se agrega a una lista
+            if cursor:
+                self.printEstado(cursor)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
     
     def busqueda_invitado_confirmar_evento(self, evento, rut):
         try:
@@ -182,6 +190,13 @@ class MongoManager:
             dato = [codigo, nom_evento, rut, nombre, estado, checkin] #type: ignore
             tabla.append(dato)
         print(tabulate(tabla, headers=headers))
+    
+    def printEstado(self, cursor):
+        rut = cursor["rut"]
+        nombre = cursor["nombre"]
+        estado = cursor["estado"]
+        estado = estado.capitalize()
+        print(f"Estado actual para el invitado '{nombre}' (RUT: {rut}): {estado}") #type: ignore
             
 
 
