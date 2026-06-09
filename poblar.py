@@ -48,6 +48,8 @@ def inicializar():
              poblar_bd(uri)
         elif eleccion == "n":
              raise SystemExit
+        else:
+             print("Seleccione una opción válida.")
 
 inicializar()
      

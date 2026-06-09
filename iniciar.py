@@ -4,6 +4,6 @@ from database.db import MongoManager
 
 manager = MongoManager()
 
-rut = input("Ingrese RUT (con puntos y guión): ")
+cant = input("Ingrese cantidad de eventos a mostrar: ")
 
-manager.busqueda_invitado_validar_estado(rut)
+manager.busqueda_top_eventos(cant)
