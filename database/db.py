@@ -25,6 +25,7 @@ invitados = bd[COL_INVITADOS]
 
 
 class MongoManager:
+
     def busqueda_evento_nombre(self, data):
         try:
             regex = re.compile(f"{data}$")
@@ -37,7 +38,29 @@ class MongoManager:
                 print("No se encontró ningún evento.")
         except Exception as e:
             print(e)
-    
+
+    def busqueda_evento_codigo(self, data):
+        try:
+            data = data.strip()
+            data = "EVT-" + data #Añade el prefijo "EVT-" a la string
+            #print(data) < print debug
+            patron_re = re.compile("^(EVT).\\d{4}.\\d{3}$") #El patrón busca el grupo de caracteres "EVT" al inicio del string, los puntos indican cualquier carácter incluidos espacios
+            #luego \d busca cualquier carácter númerico y se indica la cantidad de esos carácteres.
+            if patron_re.match(data): #compara el string introducido con el patrón de regex para realizar la busqueda, si es incorrecto no se realiza.
+                busqueda_re = re.compile(f"^(EVT).{data[4:8]}.{data[9:12]}$")
+                #print(busqueda_re) < print debug
+                cursor = bd[COL_EVENTOS].find({"codigo": busqueda_re})
+                resultados = list(cursor)
+                cursor.close()
+                if resultados:
+                    self.printEvento(resultados)
+                else:
+                    print("No se encontró ningún evento")
+            else:
+                print("Formato de código incorrecto, intente nuevamente.")
+
+        except Exception as e:
+            print(e)         
     def printEvento(self, lista):
         tabla = []
         headers = ["Codigo", "Nombre", "Fecha", "Lugar", "Categoria"]
