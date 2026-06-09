@@ -20,8 +20,6 @@ def conexion_mongo(uri = MONGO_URI, nombre_bd = DB_NAME) -> Database:
 
 bd = conexion_mongo()
 
-
-
 class MongoManager:
 
     def busqueda_evento_nombre(self, data):
@@ -141,6 +139,40 @@ class MongoManager:
         except Exception as e:
             print(e)
 
+    def busqueda_top_eventos(self, data):
+        try:
+            data = int(data)
+            if data <= 0:
+                raise ValueError
+            cursor = bd[COL_EVENTOS].aggregate(
+                [
+                    {
+                        "$addFields":{
+                            "cant_invitados": {
+                                "$size": "$invitados" #añade el campo cant_invitados y le asigna el valor del tamaño del array de invitados (cantidad de elementos en el array)
+                            }
+                        }
+                    },
+                    {
+                        "$sort":{
+                            "cant_invitados": -1 #ordena de forma descendiente según el nuevo campo
+                        }
+                    },
+                    {
+                        "$limit": data #limita la cantidad de resultados
+                    }
+                ]
+            )
+            resultados = list(cursor)
+            if resultados:
+                self.printTopEventos(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except ValueError:
+            print("Ingrese un válor válido.")
+        except Exception as e:
+            print(e)
+
     def printEvento(self, lista):
         tabla = []
         headers = ["Código", "Nombre", "Fecha", "Lugar", "Categoría"]
@@ -195,6 +227,20 @@ class MongoManager:
         estado = cursor["estado"]
         estado = estado.capitalize()
         print(f"Estado actual para el invitado '{nombre}' (RUT: {rut}): {estado}")
+    
+    def printTopEventos(self, lista):
+        tabla = []
+        headers = ["Código", "Nombre", "Fecha", "Lugar", "Categoría", "Cant. Invitados"]
+        for resultado in lista:
+            codigo = str(resultado["codigo"])
+            nombre = str(resultado["nombre"])
+            fecha = str(resultado["fecha"][0:10])
+            lugar = str(resultado["lugar"])
+            categoria = str(resultado["categoria"])
+            cant_invitados = str(resultado["cant_invitados"])
+            dato = [codigo, nombre, fecha, lugar, categoria, cant_invitados]
+            tabla.append(dato)
+        print(tabulate(tabla, headers=headers))
             
 
 
