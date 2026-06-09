@@ -5,7 +5,7 @@ import re
 from tabulate import tabulate #usada para generar tablas dinámicas, da mejores resultados que alineamentos hard codeados
 
 MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "prueba3"
+DB_NAME = "prueba3_rbeltran"
 COL_EVENTOS = "eventos"
 COL_INVITADOS = "invitados"
 
@@ -19,8 +19,6 @@ def conexion_mongo(uri = MONGO_URI, nombre_bd = DB_NAME) -> Database:
             raise RuntimeError(f"No fue posible la conexión: {error}")
 
 bd = conexion_mongo()
-eventos = bd[COL_EVENTOS]
-invitados = bd[COL_INVITADOS]
 
 
 
@@ -196,7 +194,7 @@ class MongoManager:
         nombre = cursor["nombre"]
         estado = cursor["estado"]
         estado = estado.capitalize()
-        print(f"Estado actual para el invitado '{nombre}' (RUT: {rut}): {estado}") #type: ignore
+        print(f"Estado actual para el invitado '{nombre}' (RUT: {rut}): {estado}")
             
 
 
