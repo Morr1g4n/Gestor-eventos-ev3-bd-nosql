@@ -60,8 +60,7 @@ class MongoManager:
                 print("Formato de código incorrecto, intente nuevamente.")
 
         except Exception as e:
-            print(e)
-    
+            print(e)         
     def printEvento(self, lista):
         tabla = []
         headers = ["Codigo", "Nombre", "Fecha", "Lugar", "Categoria"]
