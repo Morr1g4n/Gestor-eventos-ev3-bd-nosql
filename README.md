@@ -1,4 +1,6 @@
 # Gestor-eventos-ev3-bd-nosql
+Gestor de busqueda de eventos para tercera evaluación de Bases de Datos No Relacionales
+
 ## Como inicializar
 
 1. Clonar el proyecto y abrir en vs code
