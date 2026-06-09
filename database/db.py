@@ -42,11 +42,10 @@ class MongoManager:
             data = data.strip()
             data = "EVT-" + data #Añade el prefijo "EVT-" a la string
             #print(data) < print debug
-            patron_re = re.compile("^(EVT).\\d{4}.\\d{3}$") #El patrón busca el grupo de caracteres "EVT" al inicio del string, los puntos indican cualquier carácter incluidos espacios
+            patron_re = re.compile("^(EVT).\\d{4}.\\d{3}$") #El patrón busca el grupo de caracteres "EVT" al inicio del string, los puntos indican cualquier carácter, incluidos espacios
             #luego \d busca cualquier carácter númerico y se indica la cantidad de esos carácteres.
             if patron_re.match(data): #compara el string introducido con el patrón de regex para realizar la busqueda, si es incorrecto no se realiza.
                 busqueda_re = re.compile(f"^(EVT).{data[4:8]}.{data[9:12]}$")
-                #print(busqueda_re) < print debug
                 cursor = bd[COL_EVENTOS].find({"codigo": busqueda_re})
                 resultados = list(cursor)
                 cursor.close()
@@ -200,7 +199,8 @@ class MongoManager:
             categoria = str(resultado["categoria"])
             dato = [codigo, nombre, fecha, lugar, categoria]
             tabla.append(dato)
-        print(tabulate(tabla, headers=headers))
+        print("Eventos encontrados")
+        print(tabulate(tabla, headers=headers, tablefmt="simple_grid"))
 
     def printInvitado(self, lista):
         tabla = []
@@ -213,7 +213,8 @@ class MongoManager:
             estado = str(resultado["estado"])
             dato = [rut, nombre, correo, empresa, estado]
             tabla.append(dato)
-        print(tabulate(tabla, headers=headers))
+        print("Invitados encontrados")
+        print(tabulate(tabla, headers=headers, tablefmt="simple_grid"))
     
     def printConfirmacion(self, lista):
         tabla = []
@@ -235,7 +236,8 @@ class MongoManager:
                 nombre = str(i["nombre"])
             dato = [codigo, nom_evento, rut, nombre, estado, checkin] #type: ignore
             tabla.append(dato)
-        print(tabulate(tabla, headers=headers))
+        print("Estado confirmación")
+        print(tabulate(tabla, headers=headers, tablefmt="simple_grid"))
     
     def printEstado(self, cursor):
         rut = cursor["rut"]
@@ -256,8 +258,8 @@ class MongoManager:
             cant_invitados = str(resultado["cant_invitados"])
             dato = [codigo, nombre, fecha, lugar, categoria, cant_invitados]
             tabla.append(dato)
-        print(tabulate(tabla, headers=headers))
-            
+        print("Top eventos por cantidad de invitados")
+        print(tabulate(tabla, headers=headers, tablefmt="simple_grid"))
 
 
     #def printEvento(self, lista):    print con alineamentos manuales, no se usará
