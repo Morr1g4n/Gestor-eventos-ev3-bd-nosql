@@ -4,7 +4,7 @@
 1. Clonar el proyecto y abrir en vs code
 2. Crear entorno virtual
 ```
-py -m venv entorno-pymongo
+py -m venv .venv
 ```
 3. Activar entorno
 ```
