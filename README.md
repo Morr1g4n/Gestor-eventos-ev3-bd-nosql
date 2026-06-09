@@ -15,8 +15,8 @@ linux: source .venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-5. Poblar base de datos
+5. Poblar base de datos\
 Iniciar `poblar.py` y seguir instrucciones
 
-6. Iniciar programa
+6. Iniciar programa\
 Abrir `iniciar.py` e iniciar
