@@ -24,7 +24,8 @@ class MongoManager:
 
     def busqueda_evento_nombre(self, data):
         try:
-            regex = re.compile(f"{data}$")
+            data = data.strip()
+            regex = re.compile(f"{data}$", re.IGNORECASE)
             cursor = bd[COL_EVENTOS].find({"nombre": regex})
             resultados = list(cursor) #mete los resultados del cursor dentro de una lista para comprobar si se devolvió algo o no
             #(el objeto Cursor si está vacío seguirá dando True si se comprueba con un if, pero dará False al estar en una lista, pues esta estará vacía)
@@ -61,6 +62,7 @@ class MongoManager:
 
     def busqueda_invitado_nombre(self, data):
         try:
+            data = data.strip()
             regex_nombre = re.compile(f"^{data}", re.IGNORECASE) #se usará para buscar al inicio del string, encontrará solo nombre o nombre completo
             #re.IGNORECASE hace que no sea case sensitive (ignora si es mayuscula o minuscula la busqueda)
             cursor = bd[COL_INVITADOS].find({"nombre": regex_nombre})
@@ -81,6 +83,7 @@ class MongoManager:
     
     def busqueda_invitado_dominio(self, data):
         try:
+            data = data.strip()
             regex_busqueda = re.compile(f"{data}$", re.IGNORECASE) #busca el dominio al final del string, por lo que da igual si se usa @ o no
             cursor = bd[COL_INVITADOS].find({"correo": regex_busqueda})
             resultados = list(cursor)
@@ -91,6 +94,19 @@ class MongoManager:
                 print("No se encuentran resultados.")
         except Exception as e:
             print(e)
+
+    def busqueda_invitado_rut(self, data):
+        try:
+            data = data.strip()
+            cursor = bd[COL_INVITADOS].find({"rut": data})
+            resultados = list(cursor)
+            cursor.close()
+            if resultados:
+                self.printInvitado(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e) 
 
     def busqueda_invitado_validar_estado(self, data):
         try:

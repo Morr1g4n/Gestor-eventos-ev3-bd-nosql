@@ -8,10 +8,10 @@ DB_NAME = "prueba3_rbeltran"
 MONGO_URI = "mongodb://localhost:27017"
 COL_EVENTOS = "eventos"
 COL_INVITADOS = "invitados"
-with open('json/eventos.json') as e_json:
+with open('json/eventos.json', encoding='utf-8') as e_json: #sin el encoding los tildes se vuelven caracteres basura
      eventos_json = json.load(e_json)
 
-with open ('json/invitados.json') as i_json:
+with open ('json/invitados.json', encoding='utf-8') as i_json:
      invitados_json = json.load(i_json)
 
 def conexion_mongo(uri = MONGO_URI, nombre_bd = DB_NAME) -> Database:
