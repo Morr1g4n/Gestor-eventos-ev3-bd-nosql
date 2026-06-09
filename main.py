@@ -5,6 +5,6 @@ from database.db import MongoManager
 manager = MongoManager()
 
 
-evento = input("Nombre evento: ")
+evento = input("Ingrese codigo (XXXX-XXX) EVT-: ")
 
-manager.busqueda_evento_nombre(evento)
+manager.busqueda_evento_codigo(evento)
