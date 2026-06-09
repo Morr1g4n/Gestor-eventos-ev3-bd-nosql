@@ -30,9 +30,10 @@ class MongoManager:
         try:
             regex = re.compile(f"{data}$")
             cursor = bd[COL_EVENTOS].find({"nombre": regex})
-            resultados = list(cursor)
+            resultados = list(cursor) #mete los resultados del cursor dentro de una lista para comprobar si se devolvió algo o no
+            #(el objeto Cursor si está vacío seguirá dando True si se comprueba con un if, pero dará False al estar en una lista, pues esta estará vacía)
             cursor.close()
-            if resultados:
+            if resultados: #revisa si hay algo dentro de la lista (True)
                 self.printEvento(resultados)
             else:
                 print("No se encontró ningún evento.")
@@ -78,7 +79,20 @@ class MongoManager:
                 if resultados:
                     self.printInvitado(resultados)
                 else:
-                    print("No se encuentra al invitado.")
+                    print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
+    
+    def busqueda_invitado_dominio(self, data):
+        try:
+            regex_busqueda = re.compile(f"{data}$", re.IGNORECASE) #busca el dominio al final del string, por lo que da igual si se usa @ o no
+            cursor = bd[COL_INVITADOS].find({"correo": regex_busqueda})
+            resultados = list(cursor)
+            cursor.close()
+            if resultados:
+                self.printInvitado(resultados)
+            else:
+                print("No se encuentran resultados")
         except Exception as e:
             print(e)
 

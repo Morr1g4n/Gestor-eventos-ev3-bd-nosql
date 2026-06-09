@@ -4,6 +4,6 @@ from database.db import MongoManager
 
 manager = MongoManager()
 
-nombre = input("Ingrese nombre, apellido o nombre completo del invitado (incluya tildes): ")
+email = input("Ingrese dominio de E-mail a buscar: @")
 
-manager.busqueda_invitado_nombre(nombre)
+manager.busqueda_invitado_dominio(email)
