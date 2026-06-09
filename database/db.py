@@ -92,19 +92,52 @@ class MongoManager:
             if resultados:
                 self.printInvitado(resultados)
             else:
-                print("No se encuentran resultados")
+                print("No se encuentran resultados.")
         except Exception as e:
             print(e)
 
     def busqueda_invitado_validar_estado(self, data):
         pass
     
-    def busqueda_invitado_confirmar_evento(self, data):
-        pass
+    def busqueda_invitado_confirmar_evento(self, evento, rut):
+        try:
+            rut = rut.strip()
+            re_evento = re.compile(f"{evento}$")
+            cursor = bd[COL_EVENTOS].aggregate(
+                [
+                    {
+                        "$unwind": "$invitados"  #deconstruye el array de invitados para que muestre un resultado diferente por cada elemento de este array
+                        #será usado para que solo se encuentre un resultado a la hora de hacer el lookup en vez del array entero
+                    },
+                    {
+                        "$match": { #query de busqueda
+                            "nombre": re_evento, 
+                            "invitados.rut": rut
+                        }
+                    },
+                    {
+                        "$lookup": { #crea un campo llamado "invitado" donde estará la información del invitado que se buscó con la información sacada de la colección
+                            #invitados, se usará para mostrar el nombre del invitado
+                            "from": "invitados",
+                            "localField": "invitados.rut",
+                            "foreignField": "rut",
+                            "as": "datos_invitado"
+                        }
+                    }
+                ]
+            )
+            resultados = list(cursor)
+            cursor.close()
+            if resultados:
+                self.printConfirmacion(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
 
     def printEvento(self, lista):
         tabla = []
-        headers = ["Codigo", "Nombre", "Fecha", "Lugar", "Categoria"]
+        headers = ["Código", "Nombre", "Fecha", "Lugar", "Categoría"]
         for resultado in lista:
             codigo = str(resultado["codigo"])
             nombre = str(resultado["nombre"])
@@ -127,6 +160,30 @@ class MongoManager:
             dato = [rut, nombre, correo, empresa, estado]
             tabla.append(dato)
         print(tabulate(tabla, headers=headers))
+    
+    def printConfirmacion(self, lista):
+        tabla = []
+        headers = ["Código Evento", "Nombre Evento", "RUT", "Nombre Invitado", "Estado Confirmación", "Check-in"]
+        for resultado in lista:
+            codigo = str(resultado["codigo"])
+            nom_evento = str(resultado["nombre"])
+            datos_inv = resultado["invitados"] #se hace así y no con un for porque invitados cuenta como un diccionario de diccionarios y no como un array
+            #por lo que se debe acceder de forma directa
+            rut = str(datos_inv["rut"])
+            estado = str(datos_inv["estado"])
+            estado = estado.capitalize()
+            checkin = datos_inv["checkin"]
+            if checkin:
+                checkin = "Realizado"
+            else:
+                checkin = "No realizado"
+            for i in resultado["datos_invitado"]:
+                nombre = str(i["nombre"])
+            dato = [codigo, nom_evento, rut, nombre, estado, checkin] #type: ignore
+            tabla.append(dato)
+        print(tabulate(tabla, headers=headers))
+            
+
 
     #def printEvento(self, lista):    print con alineamentos manuales, no se usará
         #print("-" * 140)
