@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
+from datetime import datetime
 import re
 from tabulate import tabulate #usada para generar tablas dinámicas, da mejores resultados que alineamentos hard codeados
 
@@ -185,6 +186,12 @@ class MongoManager:
                 print("No se encuentran resultados.")
         except ValueError:
             print("Ingrese un válor válido.")
+        except Exception as e:
+            print(e)
+
+    def busqueda_evento_fecha(self, fecha1, fecha2):
+        try:
+            fecha1 = 
         except Exception as e:
             print(e)
 

@@ -14,10 +14,11 @@ def DecodificarDateTime(dict): #hook personalizado para la deserialización de j
      #para luego ser insertados por pymongo
      if "fecha" in dict:
           dict["fecha"] = datetime.fromisoformat(dict["fecha"])
-          return dict
+     return dict #como "invitados" es un array, también mira los diccionarios de este, entonces si el return va dentro del if pensará que al no haber un campo
+     #"fecha" en los diccionarios del array, no debe devolverlo. Por lo tanto, debe ir fuera del if para que los devuelva se cumpla o no la condición
 
 with open('json/eventos.json', encoding='utf-8') as e_json: #sin el encoding los tildes se vuelven caracteres basura
-     eventos_json = json.load(e_json, object_hook = DecodificarDateTime)
+     eventos_json = json.load(e_json, object_hook = DecodificarDateTime) #se añade el hook personalizado
 
 with open ('json/invitados.json', encoding='utf-8') as i_json:
      invitados_json = json.load(i_json)
