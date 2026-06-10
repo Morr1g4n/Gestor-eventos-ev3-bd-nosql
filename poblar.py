@@ -2,14 +2,22 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from pymongo.database import Database
+from datetime import datetime
 import json
 
 DB_NAME = "prueba3_rbeltran"
 MONGO_URI = "mongodb://localhost:27017"
 COL_EVENTOS = "eventos"
 COL_INVITADOS = "invitados"
+
+def DecodificarDateTime(dict): #hook personalizado para la deserialización de json, transforma las fechas en formato ISO que están como string en objetos datetime de python
+     #para luego ser insertados por pymongo
+     if "fecha" in dict:
+          dict["fecha"] = datetime.fromisoformat(dict["fecha"])
+          return dict
+
 with open('json/eventos.json', encoding='utf-8') as e_json: #sin el encoding los tildes se vuelven caracteres basura
-     eventos_json = json.load(e_json)
+     eventos_json = json.load(e_json, object_hook = DecodificarDateTime)
 
 with open ('json/invitados.json', encoding='utf-8') as i_json:
      invitados_json = json.load(i_json)
