@@ -40,6 +40,7 @@ class Menu():
             print("3.- Buscar por top de cantidad de invitados")
             print("4.- Buscar por rango de fechas")
             print("5.- Busqueda for categoría")
+            print("6.- Mostrar todos los eventos")
             print("0.- Volver atrás")
             eleccion = input("Elija una opción: ")
             if eleccion == "1":
@@ -75,6 +76,11 @@ class Menu():
                 self.limpiarconsola()
                 manager.busqueda_evento_categoria(categoria)
                 self.continuar()
+            
+            elif eleccion == "6":
+                self.limpiarconsola()
+                manager.busqueda_evento_todos()
+                self.continuar()
 
             elif eleccion == "0":
                 self.menuInicial()
@@ -86,7 +92,7 @@ class Menu():
         self.limpiarconsola()
         while True:
             print("-" * 5 + "Buscador Invitados" + "-" * 5)
-            print("1.- Buscar por nombre (parcial o compelto)")
+            print("1.- Buscar por nombre (parcial o completo)")
             print("2.- Buscar por rut")
             print("3.- Buscar por dominio de correo")
             print("4.- Válidar estado por rut")
@@ -100,7 +106,7 @@ class Menu():
                 self.continuar()
             
             elif eleccion == "2":
-                rut = input("Ingrese rut con puntos y guión: ")
+                rut = input("Ingrese RUT con puntos y guión: ")
                 self.limpiarconsola()
                 manager.busqueda_invitado_rut(rut)
                 self.continuar()
@@ -112,14 +118,14 @@ class Menu():
                 self.continuar()
 
             elif eleccion == "4":
-                rut = input("Ingrese rut con puntos y guión: ") 
+                rut = input("Ingrese RUT con puntos y guión: ") 
                 self.limpiarconsola()
                 manager.busqueda_invitado_validar_estado(rut)
                 self.continuar()
             
             elif eleccion == "5":
                 evento = input("Ingrese nombre del evento (sin incluír prefijo): ")
-                rut = input("Ingrese rut con puntos y guión: ")
+                rut = input("Ingrese RUT con puntos y guión: ")
                 self.limpiarconsola()
                 manager.busqueda_invitado_confirmar_evento(evento, rut)
                 self.continuar()
