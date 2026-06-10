@@ -195,6 +195,8 @@ class MongoManager:
             fecha2 = fecha2.strip()
             fecha1 = datetime.strptime(fecha1, "%Y-%m-%d") #arroja ValueError en caso de que el formato sea incorrecto
             fecha2 = datetime.strptime(fecha2, "%Y-%m-%d")
+            fecha2 = fecha2 + timedelta(hours=23, minutes=59, seconds=59) #Hace que la segunda hora sea el ultimo segundo del día
+            #para que el rango sea completo (da resultados parciales o no da resultados si no se incluye)
             comp = fecha2 - fecha1 
             if comp >= timedelta(0): #comprueba si la resta da un tiempo en días igual o mayor a 0, si es negativo implica que el rango es inválido
                 cursor = bd[COL_EVENTOS].find(
@@ -223,6 +225,17 @@ class MongoManager:
             data = data.strip()
             busqueda_re = re.compile(f"^{data}$", re.IGNORECASE)
             cursor = bd[COL_EVENTOS].find({"categoria": busqueda_re})
+            resultados = list(cursor)
+            if resultados:
+                self.printEvento(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
+    
+    def busqueda_evento_todos(self):
+        try:
+            cursor = bd[COL_EVENTOS].find()
             resultados = list(cursor)
             if resultados:
                 self.printEvento(resultados)
