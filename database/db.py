@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
+from datetime import datetime, timedelta
 import re
 from tabulate import tabulate #usada para generar tablas dinámicas, da mejores resultados que alineamentos hard codeados
 
@@ -25,7 +26,7 @@ class MongoManager:
     def busqueda_evento_nombre(self, data):
         try:
             data = data.strip()
-            regex = re.compile(f"{data}$", re.IGNORECASE)
+            regex = re.compile(f"{data}$", re.IGNORECASE) #re.IGNORECASE hace que el regex ignore si las letras son mayusculas o minusculas, recomendado para busquedas de nombres
             cursor = bd[COL_EVENTOS].find({"nombre": regex})
             resultados = list(cursor) #mete los resultados del cursor dentro de una lista para comprobar si se devolvió algo o no
             #(el objeto Cursor si está vacío seguirá dando True si se comprueba con un if, pero dará False al estar en una lista, pues esta estará vacía)
@@ -121,7 +122,7 @@ class MongoManager:
     def busqueda_invitado_confirmar_evento(self, evento, rut):
         try:
             rut = rut.strip()
-            re_evento = re.compile(f"{evento}$")
+            re_evento = re.compile(f"{evento}$", re.IGNORECASE)
             cursor = bd[COL_EVENTOS].aggregate(
                 [
                     {
@@ -188,15 +189,60 @@ class MongoManager:
         except Exception as e:
             print(e)
 
+    def busqueda_evento_fecha(self, fecha1, fecha2):
+        try:
+            fecha1 = fecha1.strip()
+            fecha2 = fecha2.strip()
+            fecha1 = datetime.strptime(fecha1, "%Y-%m-%d") #arroja ValueError en caso de que el formato sea incorrecto
+            fecha2 = datetime.strptime(fecha2, "%Y-%m-%d")
+            comp = fecha2 - fecha1 
+            if comp >= timedelta(0): #comprueba si la resta da un tiempo en días igual o mayor a 0, si es negativo implica que el rango es inválido
+                cursor = bd[COL_EVENTOS].find(
+                    {
+                        "fecha":{
+                            "$gte": fecha1,
+                            "$lte": fecha2
+                        }
+                    }
+                )
+                resultados = list(cursor)
+                cursor.close()
+                if resultados:
+                    self.printEvento(resultados)
+                else:
+                    print("No se encuentran resultados.")
+            else:
+                print("Ingrese rango de fechas válido.")
+        except ValueError:
+            print("Formato de fechas incorrecto.")
+        except Exception as e:
+            print(e)
+
+    def busqueda_evento_categoria(self, data):
+        try:
+            data = data.strip()
+            busqueda_re = re.compile(f"^{data}$", re.IGNORECASE)
+            cursor = bd[COL_EVENTOS].find({"categoria": busqueda_re})
+            resultados = list(cursor)
+            if resultados:
+                self.printEvento(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
+
     def printEvento(self, lista):
         tabla = []
         headers = ["Código", "Nombre", "Fecha", "Lugar", "Categoría"]
         for resultado in lista:
             codigo = str(resultado["codigo"])
             nombre = str(resultado["nombre"])
-            fecha = str(resultado["fecha"][0:10])
+            fecha = datetime.strftime(datetime.fromisoformat(str(resultado["fecha"])), "%Y-%m-%d") 
+            #primero convierte la fecha recibida en un string para poder ser usada por el método
+            #fromisoformat, el cual convierte el string en formato ISO a un objeto datetime
+            #Luego strftime convierte ese objeto a una string con el formato especificado
             lugar = str(resultado["lugar"])
-            categoria = str(resultado["categoria"])
+            categoria = str(resultado["categoria"]).capitalize()
             dato = [codigo, nombre, fecha, lugar, categoria]
             tabla.append(dato)
         print("Eventos encontrados")
@@ -225,8 +271,7 @@ class MongoManager:
             datos_inv = resultado["invitados"] #se hace así y no con un for porque invitados cuenta como un diccionario de diccionarios y no como un array
             #por lo que se debe acceder de forma directa
             rut = str(datos_inv["rut"])
-            estado = str(datos_inv["estado"])
-            estado = estado.capitalize()
+            estado = str(datos_inv["estado"]).capitalize()
             checkin = datos_inv["checkin"]
             if checkin:
                 checkin = "Realizado"
@@ -252,7 +297,7 @@ class MongoManager:
         for resultado in lista:
             codigo = str(resultado["codigo"])
             nombre = str(resultado["nombre"])
-            fecha = str(resultado["fecha"][0:10])
+            fecha = datetime.strftime(datetime.fromisoformat(str(resultado["fecha"])), "%Y-%m-%d")
             lugar = str(resultado["lugar"])
             categoria = str(resultado["categoria"])
             cant_invitados = str(resultado["cant_invitados"])

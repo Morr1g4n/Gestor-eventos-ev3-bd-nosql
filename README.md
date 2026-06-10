@@ -17,7 +17,7 @@ linux: source .venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-5. Poblar base de datos\
+5. Poblar base de datos (obligatorio hacerlo con este script para insertar las fechas de forma correcta)\
 Iniciar `poblar.py` y seguir instrucciones
 
 6. Iniciar programa\
