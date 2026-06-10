@@ -26,7 +26,7 @@ class MongoManager:
     def busqueda_evento_nombre(self, data):
         try:
             data = data.strip()
-            regex = re.compile(f"{data}$", re.IGNORECASE)
+            regex = re.compile(f"{data}$", re.IGNORECASE) #re.IGNORECASE hace que el regex ignore si las letras son mayusculas o minusculas, recomendado para busquedas de nombres
             cursor = bd[COL_EVENTOS].find({"nombre": regex})
             resultados = list(cursor) #mete los resultados del cursor dentro de una lista para comprobar si se devolvió algo o no
             #(el objeto Cursor si está vacío seguirá dando True si se comprueba con un if, pero dará False al estar en una lista, pues esta estará vacía)
@@ -122,7 +122,7 @@ class MongoManager:
     def busqueda_invitado_confirmar_evento(self, evento, rut):
         try:
             rut = rut.strip()
-            re_evento = re.compile(f"{evento}$")
+            re_evento = re.compile(f"{evento}$", re.IGNORECASE)
             cursor = bd[COL_EVENTOS].aggregate(
                 [
                     {
@@ -242,7 +242,7 @@ class MongoManager:
             #fromisoformat, el cual convierte el string en formato ISO a un objeto datetime
             #Luego strftime convierte ese objeto a una string con el formato especificado
             lugar = str(resultado["lugar"])
-            categoria = str(resultado["categoria"])
+            categoria = str(resultado["categoria"]).capitalize()
             dato = [codigo, nombre, fecha, lugar, categoria]
             tabla.append(dato)
         print("Eventos encontrados")
@@ -271,8 +271,7 @@ class MongoManager:
             datos_inv = resultado["invitados"] #se hace así y no con un for porque invitados cuenta como un diccionario de diccionarios y no como un array
             #por lo que se debe acceder de forma directa
             rut = str(datos_inv["rut"])
-            estado = str(datos_inv["estado"])
-            estado = estado.capitalize()
+            estado = str(datos_inv["estado"]).capitalize()
             checkin = datos_inv["checkin"]
             if checkin:
                 checkin = "Realizado"
