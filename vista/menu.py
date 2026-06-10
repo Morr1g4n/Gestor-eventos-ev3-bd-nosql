@@ -38,6 +38,8 @@ class Menu():
             print("1.- Buscar por nombre")
             print("2.- Buscar por código")
             print("3.- Buscar por top de cantidad de invitados")
+            print("4.- Buscar por rango de fechas")
+            print("5.- Busqueda for categoría")
             print("0.- Volver atrás")
             eleccion = input("Elija una opción: ")
             if eleccion == "1":
@@ -56,6 +58,22 @@ class Menu():
                 cant = input("Ingrese cantidad de eventos a mostrar: ")
                 self.limpiarconsola()
                 manager.busqueda_top_eventos(cant)
+                self.continuar()
+
+            elif eleccion == "4":
+                fecha1 = input("Ingrese primera fecha del rango (fecha menor) (formato AAAA-MM-DD, incluya guiones): ")
+                fecha2 = input("Ingrese segunda fecha del rango (fecha mayor) o Enter para usar la misma fecha: ")
+                fecha2 = fecha2.strip()
+                if not fecha2:
+                    fecha2 = fecha1
+                self.limpiarconsola()
+                manager.busqueda_evento_fecha(fecha1, fecha2)
+                self.continuar()
+            
+            elif eleccion == "5":
+                categoria = input("Ingrese categoria: ")
+                self.limpiarconsola()
+                manager.busqueda_evento_categoria(categoria)
                 self.continuar()
 
             elif eleccion == "0":
