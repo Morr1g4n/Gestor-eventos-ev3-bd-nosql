@@ -10,7 +10,7 @@ py -m venv .venv
 ```
 3. Activar entorno
 ```
-windows: entorno-pymongo\Scripts\activate
+windows: .venv\Scripts\activate
 linux: source .venv/bin/activate
 ```
 4. Instalar dependencias
