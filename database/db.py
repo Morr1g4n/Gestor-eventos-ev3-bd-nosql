@@ -136,7 +136,7 @@ class MongoManager:
                         }
                     },
                     {
-                        "$lookup": { #crea un campo llamado "invitado" donde estará la información del invitado que se buscó con la información sacada de la colección
+                        "$lookup": { #crea un campo llamado "datos_invitado" donde estará la información del invitado que se buscó con la información sacada de la colección
                             #invitados, se usará para mostrar el nombre del invitado
                             "from": "invitados",
                             "localField": "invitados.rut",
@@ -159,7 +159,7 @@ class MongoManager:
         try:
             data = int(data)
             if data <= 0:
-                raise ValueError
+                raise ValueError #evita que se busquen 0 o menos eventos
             cursor = bd[COL_EVENTOS].aggregate(
                 [
                     {
@@ -206,7 +206,8 @@ class MongoManager:
                             "$lte": fecha2
                         }
                     }
-                )
+                ).sort({"fecha": 1}) #el método sort permite ordenar según un campo, en este caso la fecha
+                #el 1 implica que se ordene de más antigua a más actual, sería al revés en caso de usar un -1
                 resultados = list(cursor)
                 cursor.close()
                 if resultados:
@@ -239,6 +240,17 @@ class MongoManager:
             resultados = list(cursor)
             if resultados:
                 self.printEvento(resultados)
+            else:
+                print("No se encuentran resultados.")
+        except Exception as e:
+            print(e)
+
+    def busqueda_invitado_todos(self):
+        try:
+            cursor = bd[COL_INVITADOS].find()
+            resultados = list(cursor)
+            if resultados:
+                self.printInvitado(resultados)
             else:
                 print("No se encuentran resultados.")
         except Exception as e:

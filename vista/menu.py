@@ -97,6 +97,7 @@ class Menu():
             print("3.- Buscar por dominio de correo")
             print("4.- Válidar estado por rut")
             print("5.- Revisar estado confirmación a evento")
+            print("6.- Mostrar todos los invitados")
             print("0.- Volver atrás")
             eleccion = input("Elija una opción: ")
             if eleccion == "1":
@@ -128,6 +129,11 @@ class Menu():
                 rut = input("Ingrese RUT con puntos y guión: ")
                 self.limpiarconsola()
                 manager.busqueda_invitado_confirmar_evento(evento, rut)
+                self.continuar()
+
+            elif eleccion == "6":
+                self.limpiarconsola()
+                manager.busqueda_invitado_todos()
                 self.continuar()
 
             elif eleccion == "0":
